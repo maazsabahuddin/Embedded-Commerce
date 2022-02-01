@@ -326,3 +326,5 @@ tags
 ec/media/
 
 .pytest_cache/
+.env
+.idea
