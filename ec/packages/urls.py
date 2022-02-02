@@ -1,8 +1,8 @@
 from django.urls import path
 
-from ec.packages.views import get_package
+from ec.packages.views import getPackage
 
 app_name = "packages"
 urlpatterns = [
-    path("/", get_package, name="package"),
+    path("", getPackage, name="package"),
 ]

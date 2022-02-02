@@ -1,8 +1,13 @@
+# Python imports
+
+
 # Django imports
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 
 # Local imports
+from ec.utils import decorators as decorate, response as responseUtils, responseMessages, enums
+from . import utils
 
 
 def strike(text):
@@ -12,9 +17,21 @@ def strike(text):
     return result
 
 
-@api_view(['GET'])
-def get_package(request):
-    data = {
+@api_view(['GET', 'POST'])
+@decorate.validateFields(requiredFields=[enums.Packages.VPN])
+def getPackage(data):
+    """
+    This API will return all the packages-plan of our partner's site.
+    :param data:
+    :return:
+    """
+    data[enums.Packages.VPN] = data[enums.Packages.VPN].lower()
+    if not utils.validateVPN(data[enums.Packages.VPN]):
+        response = responseUtils.getResponseObject(success=False,
+                                                   responseMessage=responseMessages.MESSAGE_INVALID_VPN_PARTNER)
+        return JsonResponse(response)
+
+    res = {
         'noOfPackages': 3,
         'packages': [
             {
@@ -49,4 +66,7 @@ def get_package(request):
             }
         ]
     }
-    return JsonResponse(data)
+    response = responseUtils.getResponseObject(success=True,
+                                               responseData=res,
+                                               responseMessage=responseMessages.MESSAGE_SUCCESS)
+    return JsonResponse(response)
